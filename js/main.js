@@ -14,9 +14,11 @@ function addSanta($name, $email, $list){
   appendItem($list, name +' ('+ email +')')
 }
 
-function sendSantas(e){
-
-  debugger;
+function sendSantas(){
+  var request = new XMLHttpRequest();
+  request.open('POST', 'index.php', true);
+  request.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+  request.send(JSON.stringify({names: names, emails: emails, send: "true"}));
 }
 
 function appendItem($list, str){

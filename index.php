@@ -1,24 +1,56 @@
 <?php
-  require 'mailer.php';
-  require 'match-santas.php';
+  require 'includes/mailer.php';
+  require 'includes/match-santas.php';
 
   require 'includes/views.php';
 
-  $names = $_POST["names"] ?: [];
-  $emails = $_POST["emails"] ?: [];
+  $json = json_decode(file_get_contents('php://input'), true);
 
-  if ($_POST["send"] == "true") {
-    $matches = matchSantas($names, $emails);
+  $errors = [];
+  $names = $_POST["names"] ?: $json["names"] ?: [];
+  $emails = $_POST["emails"] ?: $json["emails"] ?: [];
 
-    foreach ($matches as $key => $value) {
-      echo $key . ': ' . $value;
-      //sendEmail($key, $value);
+  if ($_POST["send"] == "true" || !! $json) {
+    if(count($emails) < 2){
+      $tooFewSantas = "Add more Santas";
+    } else {
+      $matches = matchSantas($names, $emails);
+      $names = [];
+      $emails = [];
+      $success = "Santas have been emailed their Secret Santa";
+    }
+  } else {
+    foreach( $emails as $e ) {
+      preg_match('/.+@.+\..+/', $e, $matches);
+
+      if(count($matches) == 0){
+        $errors["invalid_email"] = "Add more Santas";
+      }
+    }
+
+    if(count($names) !== count(array_unique($names))){
+      $errors["duplicate_name"] = "Name must be unique";
+    }
+
+    if(count($emails) !== count(array_unique($emails))){
+      $errors["duplicate_email"] = "Email must be unique";
+    }
+
+    if(count($errors) > 0){
+      $name = array_pop($names);
+      $email = array_pop($emails);
     }
   }
+
+  if(!! $json){
+    header('Content-Type: application/json');
+    $matches = matchSantas($names, $emails);
+    echo json_encode($matches);
+  } else {
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -44,19 +76,20 @@
           </p>
           <form action="index.php" method="post" id="add-form">
             <?php
+              errors($errors);
               hiddenFields('emails', $emails);
               hiddenFields('names', $names);
             ?>
 
             <div class="field">
-              <input type="text" name="names[]" id="add-name"/>
+              <input type="text" name="names[]" id="add-name" value="<?php echo $name ?>" />
               <label for="add-name">
                 Name:
               </label>
             </div>
 
             <div class="field">
-              <input type="text" name="emails[]" id="add-email" />
+              <input type="text" name="emails[]" id="add-email" value="<?php echo $email ?>" />
               <label for="add-email">
                 Email:
               </label>
@@ -72,6 +105,13 @@
       <div class="col-6">
         <div class="scroll">
           <h2>All Santas</h2>
+          <?php
+            if(!!$tooFewSantas){
+              echo '<p class="error">', $tooFewSantas, '</p>';
+            } else if(!! $success){
+              echo '<p class="success">', $success, '</p>';
+            }
+          ?>
           <ol id="santa-list" aria-live="polite">
             <?php
               santaItems($names, $emails)
@@ -99,3 +139,7 @@
   <script type="text/javascript" src="js/main.js"></script>
   </body>
 </html>
+
+<?php
+  }
+?>

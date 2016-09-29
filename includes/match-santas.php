@@ -6,7 +6,7 @@
       $matches = match($names, $emails);
     } while (notUnique($original, $matches));
 
-    return $original;
+    return $matches;
   }
 
   function original($names, $emails){
@@ -22,14 +22,10 @@
   function match($names, $emails){
     $matches = array();
     $numbers = range(0, count($names) - 1);
-
     shuffle($numbers);
 
-    foreach ($numbers as $i) {
-      echo $i;
-      foreach ($emails as $e) {
-        $matches[$e] = $names[$key];
-      }
+    foreach ($emails as $key => $e) {
+      $matches[$e] = $names[array_pop($numbers)];
     }
 
     return $matches;

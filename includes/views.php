@@ -1,7 +1,17 @@
 <?php
-  function hiddenFields($key ,$array){
+  function hiddenFields($key, $array){
     foreach( $array as $value ) {
       echo "<input type='hidden' name='", $key,"[]' value='", $value, "' />";
+    }
+  }
+
+  function errors($errors){
+    if(count($errors) > 0){
+      echo '<p class="error">';
+      foreach( $errors as $value ) {
+        echo $value, '<br />';
+      }
+      echo '</p>';
     }
   }
 
