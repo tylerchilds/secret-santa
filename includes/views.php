@@ -7,9 +7,9 @@
 
   function errors($errors){
     if(count($errors) > 0){
-      echo '<p class="error">';
+      echo '<p>';
       foreach( $errors as $value ) {
-        echo $value, '<br />';
+        echo '<div>', $value, '</div>';
       }
       echo '</p>';
     }

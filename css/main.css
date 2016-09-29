@@ -105,23 +105,23 @@ button::-moz-focus-inner {
   border: 0;
 }
 
-[type="text"]{
+.field{
+  position: relative;
+  margin-bottom: 1.2rem;
+}
+
+.field input{
   border: 1px solid rgba(51,38,39, .25);
   margin: -2px 0 1.2rem;
   padding: 1.8rem .5rem .6rem;
   width: 100%;
 }
 
-[type="text"]:focus{
+.field input:focus{
   /* yellow #F4DB18 */
   border-color: #25633E;
   box-shadow: 0 1px 2px 0 rgba(51,38,39, .25) inset;
   outline: none;
-}
-
-.field{
-  position: relative;
-  margin-bottom: 1.2rem;
 }
 
 .field label{
@@ -155,11 +155,13 @@ button::-moz-focus-inner {
   }
 }
 
-.success{
+.success,
+.success p{
   color: #25633E;
 }
 
-.error{
+.error,
+.error p{
   color: #A80319;
 }
 

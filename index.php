@@ -20,14 +20,6 @@
       $success = "Santas have been emailed their Secret Santa";
     }
   } else {
-    foreach( $emails as $e ) {
-      preg_match('/.+@.+\..+/', $e, $matches);
-
-      if(count($matches) == 0){
-        $errors["invalid_email"] = "Add more Santas";
-      }
-    }
-
     if(count($names) !== count(array_unique($names))){
       $errors["duplicate_name"] = "Name must be unique";
     }
@@ -43,9 +35,15 @@
   }
 
   if(!! $json){
+
+    $response = array();
+    $response["matches"] = $matches;
+    $response["errors"] = $tooFewSantas;
+    $response["status"] = ! $response["errors"] ? true : false;
+
     header('Content-Type: application/json');
-    $matches = matchSantas($names, $emails);
-    echo json_encode($matches);
+    header('Status: '. $response["status"] ? '200 OK' : 'Unprocessable Entity');
+    echo json_encode($response);
   } else {
 ?>
 
@@ -75,21 +73,23 @@
             Enter the names and emails of each Santa in your gift exchange.
           </p>
           <form action="index.php" method="post" id="add-form">
+            <div class="error" id="add-errors">
+              <?php errors($errors); ?>
+            </div>
             <?php
-              errors($errors);
               hiddenFields('emails', $emails);
               hiddenFields('names', $names);
             ?>
 
             <div class="field">
-              <input type="text" name="names[]" id="add-name" value="<?php echo $name ?>" />
+              <input type="text" name="names[]" id="add-name" value="<?php echo $name ?>" required />
               <label for="add-name">
                 Name:
               </label>
             </div>
 
             <div class="field">
-              <input type="text" name="emails[]" id="add-email" value="<?php echo $email ?>" />
+              <input type="email" name="emails[]" id="add-email" value="<?php echo $email ?>"  required />
               <label for="add-email">
                 Email:
               </label>
@@ -105,13 +105,20 @@
       <div class="col-6">
         <div class="scroll">
           <h2>All Santas</h2>
-          <?php
-            if(!!$tooFewSantas){
-              echo '<p class="error">', $tooFewSantas, '</p>';
-            } else if(!! $success){
-              echo '<p class="success">', $success, '</p>';
-            }
-          ?>
+          <div class="error" id="send-errors">
+            <?php
+              if(!! $tooFewSantas){
+                echo '<p>', $tooFewSantas, '</p>';
+              }
+            ?>
+          </div>
+          <div class="success" id="send-success">
+            <?php
+              if(!! $success){
+                echo '<p>', $success, '</p>';
+              }
+            ?>
+          </div>
           <ol id="santa-list" aria-live="polite">
             <?php
               santaItems($names, $emails)
