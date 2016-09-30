@@ -1,16 +1,31 @@
+var host, group;
 var names = [];
 var emails = [];
 var elems = {};
 var errors = [];
 
-function addSanta(){
+function createGroup(){
   errors = [];
-  while (elems.$addErrors.firstChild) {
-    elems.$addErrors.removeChild(elems.$addErrors.firstChild);
+  while ($('create-errors').firstChild) {
+    $('create-errors').removeChild($('create-errors').firstChild);
   }
 
-  var name = elems.$addName.value;
-  var email = elems.$addEmail.value;
+  host = $('create-host').value;
+  group = $('create-group').value;
+
+  $('add-name').focus();
+  $('step-1').className += " prev";
+  $('step-2').className += " next";
+}
+
+function addSanta(){
+  errors = [];
+  while ($('add-errors').firstChild) {
+    $('add-errors').removeChild($('add-errors').firstChild);
+  }
+
+  var name = $('add-name').value;
+  var email = $('add-email').value;
 
   names.push(name);
   emails.push(email);
@@ -26,30 +41,31 @@ function addSanta(){
   if(errors.length > 0){
     names.pop()
     emails.pop()
-    var p = appendItem(elems.$addErrors, "p", undefined)
+    var p = appendItem($('add-errors'), "p", undefined)
     errors.forEach(function(error){ appendItem(p, "div", error)})
   }else {
-    elems.$addName.value = "";
-    elems.$addEmail.value = "";
-    appendItem(elems.$santaList, "li", name +' ('+ email +')')
+    $('add-name').value = "";
+    $('add-email').value = "";
+    $('group').innerHTML = group;
+    appendItem($('santa-list'), "li", name +' ('+ email +')')
   }
 }
 
 function sendSantas(){
   errors = [];
-  while (elems.$sendErrors.firstChild) {
-    elems.$sendErrors.removeChild(elems.$sendErrors.firstChild);
+  while ($('send-errors').firstChild) {
+    $('send-errors').removeChild($('send-errors').firstChild);
   }
 
   var request = new XMLHttpRequest();
 
   request.onreadystatechange = function(){
-    debugger;
     var DONE = 4; // readyState 4 means the request is done.
     var OK = 200; // status 200 is a successful return.
     if (request.readyState === DONE) {
       if (request.status === OK){
-        console.log(request.responseText); // 'This is the returned text.'
+        $('step-2').className += " prev";
+        $('step-3').className += " next";
       } else {
         console.log('Error: ' + request.status); // An error occurred during the request.
       }
@@ -58,7 +74,13 @@ function sendSantas(){
 
   request.open('POST', 'index.php', true);
   request.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
-  request.send(JSON.stringify({names: names, emails: emails, send: "true"}));
+  request.send(JSON.stringify({
+    names: names,
+    emails: emails,
+    host: host,
+    group: group,
+    send: "true"
+  }));
 }
 
 
@@ -76,26 +98,20 @@ function appendItem($elem, element, str){
 }
 
 window.onload = function(){
-  elems.$addForm = document.getElementById('add-form');
-  elems.$sendForm = document.getElementById('send-form');
+  $('create-host').focus();
 
-  elems.$addName = document.getElementById('add-name');
-  elems.$addEmail = document.getElementById('add-email');
+  $('create-form').addEventListener('submit', function(e){
+    e.preventDefault();
+    createGroup()
+  });
 
-  elems.$addErrors = document.getElementById('add-errors');
-  elems.$sendErrors = document.getElementById('send-errors');
-
-  elems.$santaList = document.getElementById('santa-list');
-
-  elems.$addName.focus();
-
-  elems.$addForm.addEventListener('submit', function(e){
+  $('add-form').addEventListener('submit', function(e){
     e.preventDefault();
     addSanta()
     e.target.querySelectorAll('input')[0].focus();
   });
 
-  elems.$sendForm.addEventListener('submit', function(e){
+  $('send-form').addEventListener('submit', function(e){
     e.preventDefault();
     sendSantas()
   });
@@ -111,4 +127,8 @@ function hasDuplicates(array) {
     values.push(value);
   }
   return false;
+}
+
+function $(id){
+  return document.getElementById(id)
 }

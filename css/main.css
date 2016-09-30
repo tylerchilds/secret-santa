@@ -105,6 +105,45 @@ button::-moz-focus-inner {
   border: 0;
 }
 
+.wrap-small{
+  width: 480px;
+  margin: 0 auto;
+}
+
+.content{
+  position: relative;
+}
+
+.step{
+  transform: translateY(20px);
+  height: 0;
+  opacity: 0;
+  overflow: hidden;
+  -webkit-transition: opacity 400ms ease-out, transform 400ms ease-out;
+  -moz-transition: opacity 400ms ease-out, transform 400ms ease-out;
+  -ms-transition: opacity 400ms ease-out, transform 400ms ease-out;
+  -o-transition: opacity 400ms ease-out, transform 400ms ease-out;
+  transition: opacity 400ms ease-out, transform 400ms ease-out;
+}
+
+.active{
+  transform: translateY(0);
+  opacity: 1;
+  height: auto;
+}
+
+.next{
+  transform: translateY(0);
+  opacity: 1;
+  height: auto;
+}
+
+.prev{
+  transform: translateY(-20px);
+  opacity: 0;
+  height: 0;
+}
+
 .field{
   position: relative;
   margin-bottom: 1.2rem;
@@ -177,4 +216,14 @@ button::-moz-focus-inner {
   font-style: italic;
   margin-bottom: 0;
   text-align: center;
+}
+
+.zero{
+  color: rgba(51,38,39, .75);
+  display: none;
+  font-style: italic;
+}
+
+.zero:last-child{
+  display: block;
 }
