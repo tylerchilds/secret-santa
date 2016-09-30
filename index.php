@@ -3,7 +3,7 @@
   require 'includes/match-santas.php';
 
   require 'includes/views.php';
-
+  sendEmail('test@bamzap.pw', 'HEllO w0r1d', 'test email from sendgrid');
   $json = json_decode(file_get_contents('php://input'), true);
 
   $step = 1;

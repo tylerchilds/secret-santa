@@ -1,42 +1,20 @@
 <?php
-  require 'aws/aws-autoloader.php';
-  use Aws\Ses\SesClient;
+  require("sendgrid-php/sendgrid-php.php");
 
-  function sendEmail($to, $body){
-    // Replace sender@example.com with your "From" address.
-    // This address must be verified with Amazon SES.
-    define('SENDER', 'example@bamzap.pw');
+  function sendEmail($to, $subject, $body){
+    $from = new SendGrid\Email(null, "secret.santa@bamzap.pw");
+    $subject = $subject;
+    $to = new SendGrid\Email(null, "test@bamzap.pw");
+    $content = new SendGrid\Content("text/plain", $body);
+    $mail = new SendGrid\Mail($from, $subject, $to, $content);
 
-    // Replace recipient@example.com with a "To" address. If your account
-    // is still in the sandbox, this address must be verified.
-    define('RECIPIENT', $to);
+    $apiKey = getenv('SENDGRID_API_KEY');
+    $sg = new \SendGrid($apiKey);
 
-    // Replace us-west-2 with the AWS region you're using for Amazon SES.
-    define('REGION','us-west-2');
-
-    define('SUBJECT','Secret Santa');
-    define('BODY','Your Secret Santa: ' . $body);
-
-    $client = SesClient::factory(array(
-      'version'=> 'latest',
-      'region' => REGION
-    ));
-
-    $request = array();
-    $request['Source'] = SENDER;
-    $request['Destination']['ToAddresses'] = array(RECIPIENT);
-    $request['Message']['Subject']['Data'] = SUBJECT;
-    $request['Message']['Body']['Text']['Data'] = BODY;
-
-    try {
-      $result = $client->sendEmail($request);
-      $messageId = $result->get('MessageId');
-      echo("Email sent! Message ID: $messageId"."\n");
-
-    } catch (Exception $e) {
-      echo("The email was not sent. Error message: ");
-      echo($e->getMessage()."\n");
-    }
+    $response = $sg->client->mail()->send()->post($mail);
+    echo $response->statusCode();
+    echo $response->headers();
+    echo $response->body();
   }
 
 ?>
