@@ -211,7 +211,7 @@ button::-moz-focus-inner {
 .scroll{
   background-color: #fff;
   padding: 2.4rem 1.2rem;
-  margin-bottom: 2.4rem;
+  margin-bottom: 7.2rem;
 }
 
 .info{
@@ -230,4 +230,27 @@ button::-moz-focus-inner {
 
 .zero:last-child{
   display: block;
+}
+
+.ta-right{
+  text-align: right;
+}
+
+footer{
+  color: rgba(255, 255, 255, .8);
+  padding-bottom: 2.4rem;
+}
+
+footer a:link,
+footer a:visited{
+  color: rgba(255, 255, 255, .9);
+}
+
+footer a:hover,
+footer a:focus{
+  color: #fff;
+}
+
+footer a:active{
+  color: rgba(225, 225, 225, .8);
 }

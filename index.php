@@ -64,7 +64,6 @@
 
   if(!! $json){
     $response = array();
-    $response["matches"] = $matches;
     $response["error"] = count($sendErrors) > 0 ? reset($sendErrors) : false;
 
     header('Content-Type: application/json');
@@ -82,7 +81,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
     <meta name="apple-touch-fullscreen" content="yes">
-    <link href="css/main.css" rel="stylesheet" />
+    <link href="css/main.min.css" rel="stylesheet" />
   </head>
   <body>
     <header>
@@ -218,7 +217,16 @@
       </section>
     </div>
 
-    <script type="text/javascript" src="js/main.js"></script>
+    <footer class="grid">
+      <div class="col-6">
+        Built for <a href="https://a-k-apart.com" target="_blank">10K Apart</a>
+      </div>
+      <div class="col-6 ta-right">
+        Made with ♥ by <a href="https://www.tylerchilds.com" target="_blank">Tyler Childs</a>
+      </div>
+    </footer>
+
+    <script type="text/javascript" src="js/main.min.js"></script>
   </body>
 </html>
 

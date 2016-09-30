@@ -20,9 +20,8 @@ function createGroup(){
 
 function addSanta(){
   errors = [];
-  while ($('add-errors').firstChild) {
-    $('add-errors').removeChild($('add-errors').firstChild);
-  }
+  clearErrors($('add-errors'))
+  clearErrors($('send-errors'))
 
   while ($('send-errors').firstChild) {
     $('send-errors').removeChild($('send-errors').firstChild);
@@ -56,9 +55,7 @@ function addSanta(){
 
 function sendSantas(){
   errors = [];
-  while ($('send-errors').firstChild) {
-    $('send-errors').removeChild($('send-errors').firstChild);
-  }
+  clearErrors($('send-errors'))
 
   var request = new XMLHttpRequest();
 
@@ -84,20 +81,6 @@ function sendSantas(){
     group: group,
     send: "true"
   }));
-}
-
-
-
-function appendItem($elem, element, str){
-  var item = document.createElement(element);
-  $elem.appendChild(item)
-
-  if(!! str){
-    var textnode = document.createTextNode(str);
-    item.appendChild(textnode);
-  }
-
-  return item;
 }
 
 window.onload = function(){
@@ -139,4 +122,22 @@ function $(id){
 function writeErrors(el, arr){
   var p = appendItem(el, "p", undefined)
   arr.forEach(function(e){ appendItem(p, "div", e)})
+}
+
+function appendItem($elem, element, str){
+  var item = document.createElement(element);
+  $elem.appendChild(item)
+
+  if(!! str){
+    var textnode = document.createTextNode(str);
+    item.appendChild(textnode);
+  }
+
+  return item;
+}
+
+function clearErrors(el){
+  while (el.firstChild) {
+    el.removeChild(el.firstChild);
+  }
 }
