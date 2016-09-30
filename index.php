@@ -104,14 +104,14 @@ Next, you can invite your friends to this group.
 </div>
 
 <div class="field">
-<input type="text" name="host" id="create-host" required />
+<input type="text" name="host" id="create-host"  value="<?php echo $host ?>" required />
 <label for="create-host">
 Your Name:
 </label>
 </div>
 
 <div class="field">
-<input type="text" name="group" id="create-group" required />
+<input type="text" name="group" id="create-group"  value="<?php echo $group ?>" required />
 <label for="create-group">
 Group Name:
 </label>
