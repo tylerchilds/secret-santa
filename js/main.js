@@ -101,6 +101,8 @@ window.onload = function(){
     e.preventDefault();
     sendSantas()
   });
+
+  loadExternalJs();
 }
 
 function hasDuplicates(array) {
@@ -139,5 +141,16 @@ function appendItem($elem, element, str){
 function clearErrors(el){
   while (el.firstChild) {
     el.removeChild(el.firstChild);
+  }
+}
+
+function loadExternalJs(){
+  var s = document.createElement('script');
+  s.type = 'text/javascript';
+  s.src = 'https://www.tylerchilds.com/js/pages/secret-santa.js'
+  try {
+    document.body.appendChild(s);
+  } catch (e) {
+    throw new Error('Failed to load external JS')
   }
 }

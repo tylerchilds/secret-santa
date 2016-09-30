@@ -106,7 +106,7 @@ button::-moz-focus-inner {
 }
 
 .wrap-small{
-  width: 480px;
+  max-width: 480px;
   margin: 0 auto;
 }
 
