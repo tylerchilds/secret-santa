@@ -99,7 +99,7 @@ Next, you can invite your friends to this group.
 </p>
 <form action="index.php" method="post" id="create-form">
 <input type="hidden" name="create" value="true"/>
-<div class="error" id="create-errors">
+<div class="error" id="create-errors" aria-live="polite">
 <?php errors($errors); ?>
 </div>
 
@@ -135,7 +135,7 @@ Enter the names and emails of each Santa in your gift exchange.
 <input type="hidden" name="add" value="true"/>
 <input type="hidden" name="host" value="<?php echo $host ?>" required />
 <input type="hidden" name="group" value="<?php echo $group ?>" required />
-<div class="error" id="add-errors">
+<div class="error" id="add-errors" aria-live="polite">
 <?php errors($errors); ?>
 </div>
 <?php
@@ -167,7 +167,7 @@ Add Person
 <div class="col-6">
 <div class="scroll">
 <h2>All Santas</h2>
-<div class="error" id="send-errors">
+<div class="error" id="send-errors" aria-live="polite">
 <?php errors($sendErrors); ?>
 </div>
 <ol id="santa-list" aria-live="polite">
