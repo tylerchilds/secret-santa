@@ -3,11 +3,12 @@
   require 'includes/match-santas.php';
 
   require 'includes/views.php';
-  sendEmail('test@bamzap.pw', 'HEllO w0r1d', 'test email from sendgrid');
+
   $json = json_decode(file_get_contents('php://input'), true);
 
   $step = 1;
   $errors = [];
+  $sendErrors = [];
 
   $host = $_POST["host"] ?: $json["host"] ?: "";
   $group = $_POST["group"] ?: $json["group"] ?: "";
@@ -17,17 +18,29 @@
 
   if ($_POST["send"] == "true" || !! $json) {
     if(count($emails) < 2){
-      $tooFewSantas = "Add more Santas";
+      $sendErrors['too_few_santas'] = "Add more Santas";
       $step = 2;
     } else {
       $matches = matchSantas($names, $emails);
-      $names = [];
-      $emails = [];
-      // foreach( $matches as $email => $name ) {
-      //   sendEmail($email, $name);
-      // }
-      $success = "Santas have been emailed their Secret Santa";
-      $step = 3;
+
+      $subject = 'Secret Santa invitation from ' . $host;
+
+      foreach( $matches as $email => $name ) {
+        $body = template($host, $group, $name);
+        $status = sendEmail($email, $subject, $body);
+
+        if($status >= 400){
+          $sendErrors['email_failed'] = "Unable to send all the emails at this time.";
+          $step = 2;
+        }
+      }
+
+      $name = "";
+      $email = "";
+
+      if(count($sendErrors) === 0){
+        $step = 3;
+      }
     }
   } else if ($_POST["add"] == "true") {
 
@@ -50,14 +63,12 @@
   }
 
   if(!! $json){
-
     $response = array();
     $response["matches"] = $matches;
-    $response["errors"] = $tooFewSantas;
-    $response["status"] = ! $response["errors"] ? true : false;
+    $response["error"] = count($sendErrors) > 0 ? reset($sendErrors) : false;
 
     header('Content-Type: application/json');
-    header('Status: '. $response["status"] ? '200 OK' : 'Unprocessable Entity');
+    http_response_code($response["error"] ? 401 : 200 );
     echo json_encode($response);
   } else {
 ?>
@@ -158,18 +169,7 @@
           <div class="scroll">
             <h2>All Santas</h2>
             <div class="error" id="send-errors">
-              <?php
-                if(!! $tooFewSantas){
-                  echo '<p>', $tooFewSantas, '</p>';
-                }
-              ?>
-            </div>
-            <div class="success" id="send-success">
-              <?php
-                if(!! $success){
-                  echo '<p>', $success, '</p>';
-                }
-              ?>
+              <?php errors($sendErrors); ?>
             </div>
             <ol id="santa-list" aria-live="polite">
               <li class="zero">

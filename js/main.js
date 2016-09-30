@@ -24,6 +24,10 @@ function addSanta(){
     $('add-errors').removeChild($('add-errors').firstChild);
   }
 
+  while ($('send-errors').firstChild) {
+    $('send-errors').removeChild($('send-errors').firstChild);
+  }
+
   var name = $('add-name').value;
   var email = $('add-email').value;
 
@@ -41,8 +45,7 @@ function addSanta(){
   if(errors.length > 0){
     names.pop()
     emails.pop()
-    var p = appendItem($('add-errors'), "p", undefined)
-    errors.forEach(function(error){ appendItem(p, "div", error)})
+    writeErrors($('add-errors'), errors)
   }else {
     $('add-name').value = "";
     $('add-email').value = "";
@@ -67,7 +70,7 @@ function sendSantas(){
         $('step-2').className += " prev";
         $('step-3').className += " next";
       } else {
-        console.log('Error: ' + request.status); // An error occurred during the request.
+        writeErrors($('send-errors'), [JSON.parse(request.response).error])
       }
     }
   };
@@ -131,4 +134,9 @@ function hasDuplicates(array) {
 
 function $(id){
   return document.getElementById(id)
+}
+
+function writeErrors(el, arr){
+  var p = appendItem(el, "p", undefined)
+  arr.forEach(function(e){ appendItem(p, "div", e)})
 }

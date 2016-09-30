@@ -204,6 +204,10 @@ button::-moz-focus-inner {
   color: #A80319;
 }
 
+.error p:not(:last-child){
+  margin-bottom: 0;
+}
+
 .scroll{
   background-color: #fff;
   padding: 2.4rem 1.2rem;
